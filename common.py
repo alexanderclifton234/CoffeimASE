@@ -4,7 +4,6 @@ import os
 from utils import compute_sha1_from_file
 from langchain.schema import Document
 import streamlit as st
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 from stats import add_usage
 
 def process_file(vector_store, file, loader_class, file_suffix, stats_db=None):
@@ -13,7 +12,6 @@ def process_file(vector_store, file, loader_class, file_suffix, stats_db=None):
     file_name = file.name
     file_size = file.size
     if st.secrets.self_hosted == "false":
-        if file_size > 1000000:
             st.error("File size is too large. Please upload a file smaller than 1MB or self host.")
             return
     dateshort = time.strftime("%Y%m%d")
@@ -23,7 +21,6 @@ def process_file(vector_store, file, loader_class, file_suffix, stats_db=None):
 
         loader = loader_class(tmp_file.name)
         documents = loader.load()
-        file_sha1 = compute_sha1_from_file(tmp_file.name)
     os.remove(tmp_file.name)
     
     chunk_size = st.session_state['chunk_size']
